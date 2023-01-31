@@ -31,13 +31,13 @@ class PostViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         if serializer.instance.author != self.request.user:
             Response(status=status.HTTP_403_FORBIDDEN)
-            raise PermissionDenied('Изменение чужого поста запрещено!')
+            raise PermissionDenied('Изменение чужого поста запрещено')
         super(PostViewSet, self).perform_update(serializer)
 
     def perform_destroy(self, serializer):
         if serializer.author != self.request.user:
             Response(status=status.HTTP_403_FORBIDDEN)
-            raise PermissionDenied('Удаление чужого поста запрещено!')
+            raise PermissionDenied('Удаление чужого поста запрещено')
         super(PostViewSet, self).perform_destroy(serializer)
 
 
