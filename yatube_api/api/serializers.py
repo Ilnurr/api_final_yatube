@@ -1,5 +1,4 @@
 import base64
-import datetime as dt
 
 from django.forms import ValidationError
 from django.core.files.base import ContentFile
@@ -32,9 +31,6 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Post
-
-    def pub_date(self, obj):
-        return dt.datetime.now() - obj.pub_date
 
 
 class CommentSerializer(serializers.ModelSerializer):

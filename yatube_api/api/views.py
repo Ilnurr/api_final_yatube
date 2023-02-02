@@ -1,17 +1,17 @@
-from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
-from rest_framework import status, viewsets, filters
-from rest_framework.response import Response
+from rest_framework import viewsets, filters
 from rest_framework.mixins import (CreateModelMixin, ListModelMixin,
                                    RetrieveModelMixin)
 
 from .serializers import (
     CommentSerializer, GroupSerializer, PostSerializer, FollowSerializer
 )
+from .permissions import IsAuthorOrReadOnly
 from posts.models import Group, Post, User
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import (IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+                                        IsAuthenticatedOrReadOnly,
+                                        )
 
 
 class CreateRetrieveListViewSet(CreateModelMixin, ListModelMixin,
@@ -20,25 +20,13 @@ class CreateRetrieveListViewSet(CreateModelMixin, ListModelMixin,
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
     queryset = Post.objects.select_related('author')
     serializer_class = PostSerializer
     pagination_class = LimitOffsetPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
-    def perform_update(self, serializer):
-        if serializer.instance.author != self.request.user:
-            Response(status=status.HTTP_403_FORBIDDEN)
-            raise PermissionDenied('Изменение чужого поста запрещено')
-        super(PostViewSet, self).perform_update(serializer)
-
-    def perform_destroy(self, serializer):
-        if serializer.author != self.request.user:
-            Response(status=status.HTTP_403_FORBIDDEN)
-            raise PermissionDenied('Удаление чужого поста запрещено')
-        super(PostViewSet, self).perform_destroy(serializer)
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
@@ -49,7 +37,7 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
 
     def get_post(self):
         return get_object_or_404(Post, id=self.kwargs.get('post_id'))
@@ -59,18 +47,6 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.get_post().comments.select_related('author')
-
-    def perform_update(self, serializer):
-        if serializer.instance.author != self.request.user:
-            Response(status=status.HTTP_403_FORBIDDEN)
-            raise PermissionDenied('Изменение чужого коментария запрещено!')
-        super(CommentViewSet, self).perform_update(serializer)
-
-    def perform_destroy(self, serializer):
-        if serializer.author != self.request.user:
-            Response(status=status.HTTP_403_FORBIDDEN)
-            raise PermissionDenied('Удаление чужого коментария запрещено!')
-        super(CommentViewSet, self).perform_destroy(serializer)
 
 
 class FollowViewSet(CreateRetrieveListViewSet):
