@@ -1,21 +1,55 @@
-Api_final_yatube
-Финальном проекте Yatube_api предоставили api создания и редоктирования поста, комментариев, подписок на автора, регистрации и просмотра сообществ.
+# YaTube API - социальная сеть  
 
-Как запустить проект:
-Клонировать репозиторий и перейти в него в командной строке:
+## Описание 
+Yatube - проект который является реализацией REST API для блога 
+Реализованы следующие возможности:
+* Публикация записей 
+* Комментарий записей 
+* Подписка на автора
+* Фильтровать по полям 
 
+### Технология 
+![python](https://img.shields.io/badge/Python-100000?style=for-the-badge&logo=python&logoColor=white) ![django](https://img.shields.io/badge/django-100000?style=for-the-badge&logo=django&logoColor=white) ![django rest](https://img.shields.io/badge/django%20rest-100000?style=for-the-badge&logo=django&logoColor=white) ![sqlite](https://img.shields.io/badge/SQLite-100000?style=for-the-badge&logo=sqlite&logoColor=white) ![github](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white) ![vscode](https://img.shields.io/badge/VSCode-100000?style=for-the-badge&logo=visual%20studio%20code&logoColor=white)
 
-Cоздать и активировать виртуальное окружение:
+## Запуск проекта 
+Клонировать репозиторий:
 
+```
+git clone git@github.com:Ilnurr/api_final_yatube.git 
+```
+
+Перейти в репозиторий:
+
+```
+ cd api_final_yatube
+```
+
+Создать виртуальное окружение:
+
+```
 python3 -m venv env
-source env/bin/activate
+```
+
+Активировать виртуальное окружение:
+
+```
+source env/bin/activate 
+```
+
 Установить зависимости из файла requirements.txt:
 
-python3 -m pip install --upgrade pip
-pip install -r requirements.txt
+```
+pip install -r requirements.txt 
+```
+ 
 Выполнить миграции:
 
-python3 manage.py migrate
+```
+python3 manage.py migrate 
+```
+
 Запустить проект:
 
+```
 python3 manage.py runserver
+```
